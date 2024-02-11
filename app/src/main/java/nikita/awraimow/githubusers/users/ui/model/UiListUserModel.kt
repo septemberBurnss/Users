@@ -1,4 +1,4 @@
-package nikita.awraimow.githubusers.ui.models
+package nikita.awraimow.githubusers.users.ui.model
 
 data class UiListUserModel(
     val name: String,

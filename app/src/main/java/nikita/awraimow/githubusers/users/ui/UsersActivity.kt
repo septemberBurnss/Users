@@ -1,8 +1,9 @@
-package nikita.awraimow.githubusers
+package nikita.awraimow.githubusers.users.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,31 +15,40 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import nikita.awraimow.githubusers.ui.models.UiListUserModel
+import dagger.hilt.android.AndroidEntryPoint
+import nikita.awraimow.githubusers.users.ui.model.UiListUserModel
 import nikita.awraimow.githubusers.ui.theme.GithubUsersTheme
 import nikita.awraimow.githubusers.ui.theme.Values.DefaultPadding
 import nikita.awraimow.githubusers.ui.theme.Values.ProfilePicRadius
 import nikita.awraimow.githubusers.ui.theme.Values.ProfilePicSize
 import nikita.awraimow.githubusers.ui.theme.Values.SmallPadding
 
-class MainActivity : ComponentActivity() {
+@AndroidEntryPoint
+class UsersActivity : ComponentActivity() {
+
+    private val usersViewModel: UsersViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             GithubUsersTheme {
+                val state = usersViewModel.uiState.collectAsState().value
+
                 Column(modifier = Modifier.fillMaxSize()) {
-                    UsersList(
-                        users = listOf()
-                    )
+                    if (state is UsersScreenState.Loaded) {
+                        UsersList(users = state.users)
+                    }
                 }
             }
         }
+        usersViewModel.loadUsers()
     }
 }
 
