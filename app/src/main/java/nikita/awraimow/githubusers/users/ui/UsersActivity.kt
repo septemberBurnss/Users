@@ -50,14 +50,9 @@ class UsersActivity : ComponentActivity() {
             GithubUsersTheme {
                 val state = usersViewModel.uiState.collectAsState().value
 
-                Column(modifier = Modifier.fillMaxSize()) {
-                    if (state is UsersScreenState.Loaded) {
-                        UsersList(
-                            users = state.users,
-                            this@UsersActivity::goToUserDetailsScreen
-                        )
-                    }
-                }
+                if (state is UsersScreenState.Loaded) {
+                    Loaded(state)
+                } //todo loading state
             }
         }
         lifecycleScope.launch {
@@ -74,6 +69,16 @@ class UsersActivity : ComponentActivity() {
                 UserDetailsActivity::class.java
             ).putExtra(UserDetailsActivity.USER_ID_KEY, userId)
         )
+    }
+
+    @Composable
+    private fun Loaded(state: UsersScreenState.Loaded) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            UsersList(
+                users = state.users,
+                this@UsersActivity::goToUserDetailsScreen
+            )
+        }
     }
 }
 

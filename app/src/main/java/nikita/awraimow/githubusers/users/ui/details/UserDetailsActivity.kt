@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +42,6 @@ class UserDetailsActivity: ComponentActivity() {
 
     private val userDetailsViewModel: UserDetailsViewModel by viewModels()
 
-    @OptIn(ExperimentalGlideComposeApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -49,92 +49,98 @@ class UserDetailsActivity: ComponentActivity() {
                 val state = userDetailsViewModel.uiState.collectAsState().value
 
                 if (state is UserDetailsScreenState.Loaded) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .verticalScroll(rememberScrollState())
-                            .padding(MediumPadding)
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            GlideImage(
-                                model = state.userDetails.profilePicUrl,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(Values.ProfilePicRadius))
-                                    .fillMaxWidth(0.4f)
-                            )
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth(0.6f)
-                                    .padding(DefaultPadding)
-                            ) {
-                                state.userDetails.name?.let {
-                                    Text(
-                                        text =it,
-                                        style = TextStyle(fontWeight = FontWeight.Bold)
-                                    )
-                                }
-                                Text(text = state.userDetails.login)
-                            }
-                        }
-
-                        Button(
-                            onClick = { viewInBrowser(state.userDetails.profileUrl) },
-                            modifier = Modifier.padding(top = DefaultPadding)
-                        ) {
-                            Text(text = stringResource(id = R.string.view_in_browser))
-                        }
-
-                        state.userDetails.bio?.let {
-                            Text(
-                                text = stringResource(id = R.string.bio),
-                                style = TextStyle(fontWeight = FontWeight.Bold),
-                                modifier = Modifier.padding(top = DefaultPadding)
-                            )
-                            Text(text = it)
-                        }
-
-                        state.userDetails.location?.let {
-                            Text(
-                                text = stringResource(id = R.string.location),
-                                style = TextStyle(fontWeight = FontWeight.Bold),
-                                modifier = Modifier.padding(top = DefaultPadding)
-                            )
-                            Text(text = it)
-                        }
-
-                        if (!state.userDetails.blog.isNullOrEmpty()) {
-                            Text(
-                                text = stringResource(id = R.string.blog),
-                                style = TextStyle(fontWeight = FontWeight.Bold),
-                                modifier = Modifier.padding(top = DefaultPadding)
-                            )
-                            Text(text = state.userDetails.blog)
-                        }
-
-                        Row(modifier = Modifier.padding(top = DefaultPadding)) {
-                            Text(
-                                text = stringResource(id = R.string.followers),
-                                style = TextStyle(fontWeight = FontWeight.Bold),
-                                modifier = Modifier.padding(end = SmallPadding)
-                            )
-                            Text(text = "${state.userDetails.followers}")
-                        }
-                        Row {
-                            Text(
-                                text = stringResource(id = R.string.following),
-                                style = TextStyle(fontWeight = FontWeight.Bold),
-                                modifier = Modifier.padding(end = SmallPadding)
-                            )
-                            Text(text = "${state.userDetails.following}")
-                        }
-                    }
+                    Loaded(state)
                 }
             }
         }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 userDetailsViewModel.loadUser(intent.getIntExtra(USER_ID_KEY, -1))
+            }
+        }
+    }
+
+    @OptIn(ExperimentalGlideComposeApi::class)
+    @Composable
+    private fun Loaded(state: UserDetailsScreenState.Loaded) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(MediumPadding)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                GlideImage(
+                    model = state.userDetails.profilePicUrl,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(Values.ProfilePicRadius))
+                        .fillMaxWidth(0.4f)
+                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(0.6f)
+                        .padding(DefaultPadding)
+                ) {
+                    state.userDetails.name?.let {
+                        Text(
+                            text =it,
+                            style = TextStyle(fontWeight = FontWeight.Bold)
+                        )
+                    }
+                    Text(text = state.userDetails.login)
+                }
+            }
+
+            Button(
+                onClick = { viewInBrowser(state.userDetails.profileUrl) },
+                modifier = Modifier.padding(top = DefaultPadding)
+            ) {
+                Text(text = stringResource(id = R.string.view_in_browser))
+            }
+
+            state.userDetails.bio?.let {
+                Text(
+                    text = stringResource(id = R.string.bio),
+                    style = TextStyle(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(top = DefaultPadding)
+                )
+                Text(text = it)
+            }
+
+            state.userDetails.location?.let {
+                Text(
+                    text = stringResource(id = R.string.location),
+                    style = TextStyle(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(top = DefaultPadding)
+                )
+                Text(text = it)
+            }
+
+            if (!state.userDetails.blog.isNullOrEmpty()) {
+                Text(
+                    text = stringResource(id = R.string.blog),
+                    style = TextStyle(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(top = DefaultPadding)
+                )
+                Text(text = state.userDetails.blog)
+            }
+
+            Row(modifier = Modifier.padding(top = DefaultPadding)) {
+                Text(
+                    text = stringResource(id = R.string.followers),
+                    style = TextStyle(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(end = SmallPadding)
+                )
+                Text(text = "${state.userDetails.followers}")
+            }
+            Row {
+                Text(
+                    text = stringResource(id = R.string.following),
+                    style = TextStyle(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(end = SmallPadding)
+                )
+                Text(text = "${state.userDetails.following}")
             }
         }
     }
