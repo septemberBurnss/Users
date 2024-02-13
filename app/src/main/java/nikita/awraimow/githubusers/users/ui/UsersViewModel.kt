@@ -21,7 +21,7 @@ class UsersViewModel @Inject constructor(
     fun loadUsers() {
         viewModelScope.launch {
             _uiState.value = UsersScreenState.Loaded(
-                getUsersUseCase.getUsers().map(usersMapper::mapToUiListModel)
+                usersMapper.mapToUiListModels(getUsersUseCase.getUsers())
             )
         }
     }

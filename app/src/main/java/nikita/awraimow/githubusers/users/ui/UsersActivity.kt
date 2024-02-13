@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,10 +22,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import nikita.awraimow.githubusers.users.ui.model.UiListUserModel
 import nikita.awraimow.githubusers.ui.theme.GithubUsersTheme
 import nikita.awraimow.githubusers.ui.theme.Values.DefaultPadding
@@ -54,7 +60,11 @@ class UsersActivity : ComponentActivity() {
                 }
             }
         }
-        usersViewModel.loadUsers()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                usersViewModel.loadUsers()
+            }
+        }
     }
 
     private fun goToUserDetailsScreen(userId: Int) {
@@ -85,9 +95,16 @@ fun UsersList(users: List<UiListUserModel>, onClick: (Int) -> Unit) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun UserRow(user: UiListUserModel, modifier: Modifier) {
+    val background = if (user.isViewed) {
+        Color.LightGray
+    } else {
+        Color.White
+    }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
+            .background(background)
+            .padding(SmallPadding)
     ) {
         GlideImage(
             model = user.profilePicUrl,

@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -22,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import nikita.awraimow.githubusers.ui.theme.GithubUsersTheme
 import nikita.awraimow.githubusers.ui.theme.Values
 import nikita.awraimow.githubusers.ui.theme.Values.DefaultPadding
+import nikita.awraimow.githubusers.ui.theme.Values.MediumPadding
 import nikita.awraimow.githubusers.ui.theme.Values.SmallPadding
 
 @AndroidEntryPoint
@@ -40,11 +43,11 @@ class UserDetailsActivity: ComponentActivity() {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(DefaultPadding)
+                            .verticalScroll(rememberScrollState())
+                            .padding(MediumPadding)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(DefaultPadding)
                         ) {
                             GlideImage(
                                 model = state.userDetails.profilePicUrl,

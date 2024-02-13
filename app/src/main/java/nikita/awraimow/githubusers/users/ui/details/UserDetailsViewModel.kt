@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import nikita.awraimow.githubusers.users.data.local.SharedPreferencesWrapper
 import nikita.awraimow.githubusers.users.ui.GithubUserDetailsMapper
 import nikita.awraimow.githubusers.users.usecase.GetUserDetailsUseCase
 import javax.inject.Inject
@@ -13,6 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class UserDetailsViewModel @Inject constructor(
     private val getUserDetailsUseCase: GetUserDetailsUseCase,
+    private val sharedPreferencesWrapper: SharedPreferencesWrapper,
     private val usersMapper: GithubUserDetailsMapper
 ): ViewModel() {
 
@@ -21,6 +23,7 @@ class UserDetailsViewModel @Inject constructor(
 
     fun loadUser(userId: Int) {
         viewModelScope.launch {
+            sharedPreferencesWrapper.saveView(userId)
             _uiState.value = UserDetailsScreenState.Loaded(
                 usersMapper.mapToUiModel(
                     getUserDetailsUseCase.getUserDetails(userId)
