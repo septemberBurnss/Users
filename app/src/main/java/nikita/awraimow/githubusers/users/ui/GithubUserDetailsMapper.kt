@@ -10,15 +10,16 @@ class GithubUserDetailsMapper @Inject constructor() {
 
     fun mapToUiModel(responseItem: GithubUserDetailsResponseItem): UserDetailsUiModel {
         return UserDetailsUiModel(
-            responseItem.name,
-            responseItem.login,
-            responseItem.avatar_url,
-            responseItem.company,
-            responseItem.blog,
-            responseItem.location,
-            responseItem.bio,
-            responseItem.followers,
-            responseItem.following,
+            name = responseItem.name,
+            login = responseItem.login,
+            profileUrl = responseItem.html_url,
+            profilePicUrl = responseItem.avatar_url,
+            company = responseItem.company,
+            blog = responseItem.blog,
+            location = responseItem.location,
+            bio = responseItem.bio,
+            followers = responseItem.followers,
+            following = responseItem.following,
         )
     }
 }

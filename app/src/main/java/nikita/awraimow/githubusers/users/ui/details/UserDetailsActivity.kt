@@ -1,5 +1,7 @@
 package nikita.awraimow.githubusers.users.ui.details
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -18,9 +21,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import nikita.awraimow.githubusers.ui.theme.GithubUsersTheme
 import nikita.awraimow.githubusers.ui.theme.Values
 import nikita.awraimow.githubusers.ui.theme.Values.DefaultPadding
@@ -46,9 +53,7 @@ class UserDetailsActivity: ComponentActivity() {
                             .verticalScroll(rememberScrollState())
                             .padding(MediumPadding)
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             GlideImage(
                                 model = state.userDetails.profilePicUrl,
                                 contentDescription = null,
@@ -70,6 +75,14 @@ class UserDetailsActivity: ComponentActivity() {
                                 Text(text = state.userDetails.login)
                             }
                         }
+
+                        Button(
+                            onClick = { viewInBrowser(state.userDetails.profileUrl) },
+                            modifier = Modifier.padding(top = DefaultPadding)
+                        ) {
+                            Text(text = "View in browser")
+                        }
+
                         state.userDetails.bio?.let {
                             Text(
                                 text = "Bio",
@@ -88,13 +101,13 @@ class UserDetailsActivity: ComponentActivity() {
                             Text(text = it)
                         }
 
-                        state.userDetails.blog?.let {
+                        if (!state.userDetails.blog.isNullOrEmpty()) {
                             Text(
                                 text = "Blog",
                                 style = TextStyle(fontWeight = FontWeight.Bold),
                                 modifier = Modifier.padding(top = DefaultPadding)
                             )
-                            Text(text = it)
+                            Text(text = state.userDetails.blog)
                         }
 
                         Row(modifier = Modifier.padding(top = DefaultPadding)) {
@@ -115,10 +128,19 @@ class UserDetailsActivity: ComponentActivity() {
                         }
                     }
                 }
-
             }
         }
-        userDetailsViewModel.loadUser(intent.getIntExtra(USER_ID_KEY, -1))
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                userDetailsViewModel.loadUser(intent.getIntExtra(USER_ID_KEY, -1))
+            }
+        }
+    }
+
+    private fun viewInBrowser(profileUrl: String) {
+        startActivity(Intent(Intent.ACTION_VIEW).setData(
+            Uri.parse(profileUrl)
+        ))
     }
 
     companion object {

@@ -3,6 +3,7 @@ package nikita.awraimow.githubusers.users.ui.model
 data class UserDetailsUiModel(
     val name: String?,
     val login: String,
+    val profileUrl: String,
     val profilePicUrl: String,
     val company: String?,
     val blog: String?,
