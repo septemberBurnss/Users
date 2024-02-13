@@ -9,6 +9,6 @@ import javax.inject.Singleton
 class GithubUsersMapper @Inject constructor() {
 
     fun mapToUiListModel(responseItem: GithubUsersResponseItem): UiListUserModel {
-        return UiListUserModel(responseItem.login, responseItem.avatar_url)
+        return UiListUserModel(responseItem.login, responseItem.avatar_url, responseItem.id)
     }
 }

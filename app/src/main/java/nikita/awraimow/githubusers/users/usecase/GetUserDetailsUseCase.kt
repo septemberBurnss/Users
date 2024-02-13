@@ -10,7 +10,7 @@ class GetUserDetailsUseCase @Inject constructor(
     private val usersRepository: UsersRepository
 ) {
 
-    suspend fun getUserDetails(): GithubUserDetailsResponseItem {
-        return usersRepository.getUser()
+    suspend fun getUserDetails(userId: Int): GithubUserDetailsResponseItem {
+        return usersRepository.getUser(userId)
     }
 }

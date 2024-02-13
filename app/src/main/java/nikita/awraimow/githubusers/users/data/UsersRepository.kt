@@ -9,8 +9,8 @@ class UsersRepository @Inject constructor(
     private val githubService: GithubService
 ) {
 
-    suspend fun getUser(): GithubUserDetailsResponseItem {
-        return githubService.getUser()
+    suspend fun getUser(userId: Int): GithubUserDetailsResponseItem {
+        return githubService.getUser(userId)
     }
 
     suspend fun getUsers(): List<GithubUsersResponseItem> {

@@ -19,10 +19,12 @@ class UserDetailsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UserDetailsScreenState>(UserDetailsScreenState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    fun loadUser() {
+    fun loadUser(userId: Int) {
         viewModelScope.launch {
             _uiState.value = UserDetailsScreenState.Loaded(
-                usersMapper.mapToUiModel(getUserDetailsUseCase.getUserDetails())
+                usersMapper.mapToUiModel(
+                    getUserDetailsUseCase.getUserDetails(userId)
+                )
             )
         }
     }

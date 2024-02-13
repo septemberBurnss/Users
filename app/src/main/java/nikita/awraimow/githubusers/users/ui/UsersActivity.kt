@@ -1,9 +1,11 @@
 package nikita.awraimow.githubusers.users.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +31,7 @@ import nikita.awraimow.githubusers.ui.theme.Values.DefaultPadding
 import nikita.awraimow.githubusers.ui.theme.Values.ProfilePicRadius
 import nikita.awraimow.githubusers.ui.theme.Values.ProfilePicSize
 import nikita.awraimow.githubusers.ui.theme.Values.SmallPadding
+import nikita.awraimow.githubusers.users.ui.details.UserDetailsActivity
 
 @AndroidEntryPoint
 class UsersActivity : ComponentActivity() {
@@ -43,30 +46,48 @@ class UsersActivity : ComponentActivity() {
 
                 Column(modifier = Modifier.fillMaxSize()) {
                     if (state is UsersScreenState.Loaded) {
-                        UsersList(users = state.users)
+                        UsersList(
+                            users = state.users,
+                            this@UsersActivity::goToUserDetailsScreen
+                        )
                     }
                 }
             }
         }
         usersViewModel.loadUsers()
     }
+
+    private fun goToUserDetailsScreen(userId: Int) {
+        startActivity(
+            Intent(
+                this,
+                UserDetailsActivity::class.java
+            ).putExtra(UserDetailsActivity.USER_ID_KEY, userId)
+        )
+    }
 }
 
 @Composable
-fun UsersList(users: List<UiListUserModel>) {
+fun UsersList(users: List<UiListUserModel>, onClick: (Int) -> Unit) {
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         items(users) { user ->
-            UserRow(user)
+            UserRow(
+                user = user,
+                modifier = Modifier
+                    .padding(SmallPadding)
+                    .clickable { onClick(user.userId) }
+                    .fillMaxWidth()
+            )
         }
     }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun UserRow(user: UiListUserModel) {
+fun UserRow(user: UiListUserModel, modifier: Modifier) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(SmallPadding)
+        modifier = modifier
     ) {
         GlideImage(
             model = user.profilePicUrl,
@@ -87,6 +108,6 @@ fun UserRow(user: UiListUserModel) {
 fun UserListPreview() {
     GithubUsersTheme {
         val sampleList: List<UiListUserModel> = emptyList()
-        UsersList(users = sampleList)
+        UsersList(users = sampleList) {}
     }
 }

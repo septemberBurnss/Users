@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -20,6 +21,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import dagger.hilt.android.AndroidEntryPoint
 import nikita.awraimow.githubusers.ui.theme.GithubUsersTheme
 import nikita.awraimow.githubusers.ui.theme.Values
+import nikita.awraimow.githubusers.ui.theme.Values.DefaultPadding
 import nikita.awraimow.githubusers.ui.theme.Values.SmallPadding
 
 @AndroidEntryPoint
@@ -35,37 +37,88 @@ class UserDetailsActivity: ComponentActivity() {
                 val state = userDetailsViewModel.uiState.collectAsState().value
 
                 if (state is UserDetailsScreenState.Loaded) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        GlideImage(
-                            model = state.userDetails.profilePicUrl,
-                            contentDescription = null,
-                            modifier = Modifier.clip(RoundedCornerShape(Values.ProfilePicRadius))
-                        )
-                        Text(
-                            text = state.userDetails.name,
-                            style = TextStyle(fontWeight = FontWeight.Bold)
-                        )
-                        Text(text = state.userDetails.login)
-                        Text(text = state.userDetails.bio)
-                        Row {
-                            Text(text = "${state.userDetails.followers}")
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(DefaultPadding)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(DefaultPadding)
+                        ) {
+                            GlideImage(
+                                model = state.userDetails.profilePicUrl,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(Values.ProfilePicRadius))
+                                    .fillMaxWidth(0.4f)
+                            )
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.6f)
+                                    .padding(DefaultPadding)
+                            ) {
+                                state.userDetails.name?.let {
+                                    Text(
+                                        text =it,
+                                        style = TextStyle(fontWeight = FontWeight.Bold)
+                                    )
+                                }
+                                Text(text = state.userDetails.login)
+                            }
+                        }
+                        state.userDetails.bio?.let {
                             Text(
-                                text = "followers",
-                                modifier = Modifier.padding(horizontal = SmallPadding)
+                                text = "Bio",
+                                style = TextStyle(fontWeight = FontWeight.Bold),
+                                modifier = Modifier.padding(top = DefaultPadding)
+                            )
+                            Text(text = it)
+                        }
+
+                        state.userDetails.location?.let {
+                            Text(
+                                text = "Location",
+                                style = TextStyle(fontWeight = FontWeight.Bold),
+                                modifier = Modifier.padding(top = DefaultPadding)
+                            )
+                            Text(text = it)
+                        }
+
+                        state.userDetails.blog?.let {
+                            Text(
+                                text = "Blog",
+                                style = TextStyle(fontWeight = FontWeight.Bold),
+                                modifier = Modifier.padding(top = DefaultPadding)
+                            )
+                            Text(text = it)
+                        }
+
+                        Row(modifier = Modifier.padding(top = DefaultPadding)) {
+                            Text(
+                                text = "Followers:",
+                                style = TextStyle(fontWeight = FontWeight.Bold),
+                                modifier = Modifier.padding(end = SmallPadding)
+                            )
+                            Text(text = "${state.userDetails.followers}")
+                        }
+                        Row {
+                            Text(
+                                text = "Following:",
+                                style = TextStyle(fontWeight = FontWeight.Bold),
+                                modifier = Modifier.padding(end = SmallPadding)
                             )
                             Text(text = "${state.userDetails.following}")
-                            Text(
-                                text = "following",
-                                modifier = Modifier.padding(horizontal = SmallPadding)
-                            )
                         }
-                        Text(text = state.userDetails.location)
-                        Text(text = state.userDetails.blog)
                     }
                 }
 
             }
         }
-        userDetailsViewModel.loadUser()
+        userDetailsViewModel.loadUser(intent.getIntExtra(USER_ID_KEY, -1))
+    }
+
+    companion object {
+        const val USER_ID_KEY = "userId"
     }
 }
