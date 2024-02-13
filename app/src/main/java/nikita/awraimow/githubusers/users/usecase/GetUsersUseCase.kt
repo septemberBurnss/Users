@@ -1,4 +1,4 @@
-package nikita.awraimow.githubusers.users
+package nikita.awraimow.githubusers.users.usecase
 
 import nikita.awraimow.githubusers.users.data.UsersRepository
 import nikita.awraimow.githubusers.users.data.model.GithubUsersResponseItem

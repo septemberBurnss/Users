@@ -6,7 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import nikita.awraimow.githubusers.users.GetUsersUseCase
+import nikita.awraimow.githubusers.users.usecase.GetUsersUseCase
 import javax.inject.Inject
 
 @HiltViewModel
