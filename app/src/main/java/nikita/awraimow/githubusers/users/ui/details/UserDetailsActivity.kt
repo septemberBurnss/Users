@@ -19,6 +19,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.Lifecycle
@@ -28,6 +29,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import nikita.awraimow.githubusers.R
 import nikita.awraimow.githubusers.ui.theme.GithubUsersTheme
 import nikita.awraimow.githubusers.ui.theme.Values
 import nikita.awraimow.githubusers.ui.theme.Values.DefaultPadding
@@ -80,12 +82,12 @@ class UserDetailsActivity: ComponentActivity() {
                             onClick = { viewInBrowser(state.userDetails.profileUrl) },
                             modifier = Modifier.padding(top = DefaultPadding)
                         ) {
-                            Text(text = "View in browser")
+                            Text(text = stringResource(id = R.string.view_in_browser))
                         }
 
                         state.userDetails.bio?.let {
                             Text(
-                                text = "Bio",
+                                text = stringResource(id = R.string.bio),
                                 style = TextStyle(fontWeight = FontWeight.Bold),
                                 modifier = Modifier.padding(top = DefaultPadding)
                             )
@@ -94,7 +96,7 @@ class UserDetailsActivity: ComponentActivity() {
 
                         state.userDetails.location?.let {
                             Text(
-                                text = "Location",
+                                text = stringResource(id = R.string.location),
                                 style = TextStyle(fontWeight = FontWeight.Bold),
                                 modifier = Modifier.padding(top = DefaultPadding)
                             )
@@ -103,7 +105,7 @@ class UserDetailsActivity: ComponentActivity() {
 
                         if (!state.userDetails.blog.isNullOrEmpty()) {
                             Text(
-                                text = "Blog",
+                                text = stringResource(id = R.string.blog),
                                 style = TextStyle(fontWeight = FontWeight.Bold),
                                 modifier = Modifier.padding(top = DefaultPadding)
                             )
@@ -112,7 +114,7 @@ class UserDetailsActivity: ComponentActivity() {
 
                         Row(modifier = Modifier.padding(top = DefaultPadding)) {
                             Text(
-                                text = "Followers:",
+                                text = stringResource(id = R.string.followers),
                                 style = TextStyle(fontWeight = FontWeight.Bold),
                                 modifier = Modifier.padding(end = SmallPadding)
                             )
@@ -120,7 +122,7 @@ class UserDetailsActivity: ComponentActivity() {
                         }
                         Row {
                             Text(
-                                text = "Following:",
+                                text = stringResource(id = R.string.following),
                                 style = TextStyle(fontWeight = FontWeight.Bold),
                                 modifier = Modifier.padding(end = SmallPadding)
                             )

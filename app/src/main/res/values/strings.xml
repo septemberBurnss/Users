@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Github Users</string>
+    <string name="location">Location</string>
+    <string name="bio">Bio</string>
+    <string name="blog">Blog</string>
+    <string name="followers">Followers:</string>
+    <string name="following">Following:</string>
+    <string name="view_in_browser">View in browser</string>
 </resources>
